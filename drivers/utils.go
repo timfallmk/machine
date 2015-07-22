@@ -3,6 +3,7 @@ package drivers
 import (
 	"fmt"
 
+	"github.com/codegangsta/cli"
 	"github.com/docker/machine/log"
 	"github.com/docker/machine/ssh"
 	"github.com/docker/machine/utils"
@@ -26,6 +27,21 @@ func GetSSHClientFromDriver(d Driver) (ssh.Client, error) {
 	client, err := ssh.NewClient(d.GetSSHUsername(), addr, port, auth)
 	return client, err
 
+}
+
+func PrintFlagsForDriver(name string) error {
+
+        for driverName := range drivers {
+                if name == driverName {
+                        driver := drivers[driverName]
+                        flags := driver.GetCreateFlags()
+                        stringFlag, ok := flags[0].(cli.StringFlag)
+                        if ok {
+                                fmt.Println(stringFlag.Name)
+                        }
+                }
+        }
+        return fmt.Errorf("Driver %s not found", name)
 }
 
 func RunSSHCommandFromDriver(d Driver, command string) (string, error) {

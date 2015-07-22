@@ -48,10 +48,15 @@ func buildCmdCreate() {
 func cmdCreate(c *cli.Context) {
 	driver := c.Command.Name
 	name := c.Args().First()
+	printFlags := c.Args().Get(1)
 
 	if name == "" {
 		cli.ShowCommandHelp(c, driver)
 		log.Fatal("You must specify a machine name")
+	}
+
+	if printFlags == "print-flags" {
+		drivers.PrintFlagsForDriver(name)
 	}
 
 	certInfo := getCertPathInfo(c)
